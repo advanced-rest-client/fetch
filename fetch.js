@@ -342,7 +342,7 @@
       if (input.bodyUsed) {
         throw new TypeError('Already read');
       }
-      this.url = input.ur;
+      this.url = input.url;
       this.credentials = input.credentials;
       if (!options.headers) {
         this.headers = new Headers(input.headers);
