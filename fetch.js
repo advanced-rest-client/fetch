@@ -307,7 +307,7 @@
             return String.fromCharCode.apply(null, new Uint16Array(buffer));
           });
         }
-        Promise.reject(new Error('could not read FormData body as text'));
+        return Promise.reject(new Error('could not read FormData body as text'));
       } else {
         return Promise.resolve(this._bodyText);
       }
