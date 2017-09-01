@@ -304,7 +304,7 @@
       } else if (this._bodyFormData) {
         if (origHandlers && origHandlers.Request) {
           return this.arrayBuffer().then(function(buffer) {
-            return String.fromCharCode.apply(null, new Uint16Array(buffer));
+            return String.fromCharCode.apply(null, new Uint8Array(buffer));
           });
         }
         return Promise.reject(new Error('could not read FormData body as text'));
