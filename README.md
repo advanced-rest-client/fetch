@@ -1,4 +1,15 @@
-# window.fetch polyfill
+# window.fetch polyfill for Advanced REST Client
+
+It's not actually a polyfill but a replacement for native implementation of the 
+Request / Response objects used in the ARC to transport the data.
+Native implementation of the Request and the Response objects prohibits of reading 
+some headers (like `set-cookie` in the Response object). This implementation 
+won't have this limitation.
+
+The `fetch()` function is not meant to be used with this project. Only the `Request` 
+and `Response` objects.
+
+=========
 
 The `fetch()` function is a Promise-based mechanism for programmatically making
 web requests in the browser. This project is a polyfill that implements a subset
