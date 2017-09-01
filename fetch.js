@@ -269,7 +269,7 @@
               return new Blob([buffer]);
             });
           }
-          throw new Error('could not read FormData body as blob');
+          return Promise.reject(new Error('could not read FormData body as blob'));
         } else {
           return Promise.resolve(new Blob([this._bodyText]));
         }
@@ -302,7 +302,12 @@
       } else if (this._bodyArrayBuffer) {
         return Promise.resolve(readArrayBufferAsText(this._bodyArrayBuffer));
       } else if (this._bodyFormData) {
-        throw new Error('could not read FormData body as text');
+        if (origHandlers && origHandlers.Request) {
+          return this.arrayBuffer().then(function(buffer) {
+            return String.fromCharCode.apply(null, new Uint16Array(buffer));
+          });
+        }
+        Promise.reject(new Error('could not read FormData body as text'));
       } else {
         return Promise.resolve(this._bodyText);
       }
