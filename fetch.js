@@ -69,9 +69,9 @@
     var iterator = {
       next: function() {
         var value = items.shift();
-        return { 
-          done: value === undefined, 
-          value: value 
+        return {
+          done: value === undefined,
+          value: value
         };
       }
     };
@@ -137,15 +137,15 @@
 
   Headers.prototype.keys = function() {
     var items = [];
-    this.forEach(function(value, name) { 
-      items.push(name); 
+    this.forEach(function(value, name) {
+      items.push(name);
     });
     return iteratorFor(items);
   };
 
   Headers.prototype.values = function() {
     var items = [];
-    this.forEach(function(value) { 
+    this.forEach(function(value) {
       items.push(value);
     });
     return iteratorFor(items);
@@ -153,7 +153,7 @@
 
   Headers.prototype.entries = function() {
     var items = [];
-    this.forEach(function(value, name) { 
+    this.forEach(function(value, name) {
       items.push([name, value]);
     });
     return iteratorFor(items);
@@ -195,14 +195,23 @@
     return promise;
   }
 
-  function readArrayBufferAsText(buf) {
-    var view = new Uint8Array(buf);
-    var chars = new Array(view.length);
-
-    for (var i = 0; i < view.length; i++) {
-      chars[i] = String.fromCharCode(view[i]);
+  function readArrayBufferAsText(buff) {
+    // var view = new Uint8Array(buf)
+    // var chars = new Array(view.length)
+    //
+    // for (var i = 0; i < view.length; i++) {
+    //   chars[i] = String.fromCharCode(view[i])
+    // }
+    // return chars.join('')
+    if (!!buff.buffer) {
+      // Not a ArrayBuffer, need and instance of AB
+      // It can't just get buff.buffer because it will use original buffer if the buff is a slice
+      // of it.
+      buff = buff.slice(0).buffer;
     }
-    return chars.join('');
+    var decoder = new TextDecoder('utf-8');
+    var view = new DataView(buff);
+    return decoder.decode(view);
   }
 
   function bufferClone(buf) {
@@ -234,7 +243,7 @@
         this._bodyArrayBuffer = bufferClone(body.buffer);
         // IE 10-11 can't handle a DataView body.
         this._bodyInit = new Blob([this._bodyArrayBuffer]);
-      } else if (support.arrayBuffer && 
+      } else if (support.arrayBuffer &&
         (ArrayBuffer.prototype.isPrototypeOf(body) || isArrayBufferView(body))) {
         this._bodyArrayBuffer = bufferClone(body);
       } else {
@@ -372,8 +381,8 @@
   }
 
   Request.prototype.clone = function() {
-    return new Request(this, { 
-      body: this._bodyInit 
+    return new Request(this, {
+      body: this._bodyInit
     });
   };
 
@@ -392,7 +401,7 @@
 
   function parseHeaders(rawHeaders) {
     var headers = new Headers();
-    // Replace instances of \r\n and \n followed by at least one space 
+    // Replace instances of \r\n and \n followed by at least one space
     // or horizontal tab with a space
     // https://tools.ietf.org/html/rfc7230#section-3.2
     var preProcessedHeaders = rawHeaders.replace(/\r?\n[\t ]+/g, ' ');
@@ -435,7 +444,7 @@
   };
 
   Response.error = function() {
-    var response = new Response(null, { 
+    var response = new Response(null, {
       status: 0,
       statusText: ''
     });
@@ -450,11 +459,11 @@
       throw new RangeError('Invalid status code');
     }
 
-    return new Response(null, { 
-      status: status, 
-      headers: { 
-        location: url 
-      } 
+    return new Response(null, {
+      status: status,
+      headers: {
+        location: url
+      }
     });
   };
 
